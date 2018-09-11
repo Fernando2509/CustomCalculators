@@ -1,4 +1,4 @@
-from math import pi
+import math
 import argparse
 
 parser = argparse.ArgumentParser(description="Calculate some silly functions")
@@ -17,7 +17,7 @@ def FtoC(temp):
 
 def FindAreaOfACirlce(radius):
     try:
-        realNumberCheck = pi * radius * radius
+        realNumberCheck = math.pi * radius * radius
     except :
         print("Parsing error! please...")
         radius = int(input("Enter radius: "))
@@ -45,5 +45,19 @@ if __name__ == "__main__":
         print("The temperature in celsius is")
         print(FtoC(args.ftc[0]))
     else:
-        print("No arguments selected, please use \"-h\" for options")
+        print("1. Find area of a trapezoid")
+        print("2. Find area of a circle")
+        print("3. F to C")
+        choice = int(input("Choice: "))
+        if choice == 1:
+            height = int(input("Enter height of trapezoid : "))
+            bottom = int(input("Enter width of bottom trapezoid : "))
+            top = int(input("Enter width of top trapezoid : "))
+            print(FindAreaOfTrapezoid(height, bottom, top))
+        if choice == 2:
+            radius = int(input("Enter radius: "))
+            print(FindAreaOfACirlce(radius))
+        if choice == 3:
+            temp = int(input("Enter temperature in F: "))
+            print(FtoC(temp))
         input("Press enter to exit...")
