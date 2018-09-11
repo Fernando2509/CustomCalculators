@@ -65,8 +65,6 @@ class PickleManager():
         if path.exists(SAVED_FILE_NAME):
             pickle_in = open(SAVED_FILE_NAME, "rb")
             question_list = pickle.load(pickle_in)
-        else:
-            print("Question file was not found")
 
 
     def AddQuestion(question, correct_choice, *options):
