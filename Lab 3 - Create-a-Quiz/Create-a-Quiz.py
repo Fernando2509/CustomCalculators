@@ -71,13 +71,13 @@ class PickleManager():
         question_list.append(Question(question,correct_choice, options))
         PickleManager.SaveQuestions()
 
-question_list = list()
 
 question_list =[
-    Question("whats the US president's firt name?", "donald"),
+    Question("whats the US president's first name?", "donald"),
     Question("How does a cow do math?", "With a cow-culator",  "Moo-tiplicating the equations", "Using convolutional neural networks","With a cow-culator", "Using google"),
     Question("How many classes did I use to make this program?", "2", "1", "2", "4","5"),
-    Question("Whats the answer of everything?", "42")
+    Question("Whats the answer of everything (according to google)?", "42"),
+    Question("With how many classes should I have made this program?", "0", "0", "34", "10", "5", "7", "9", "-55555555555 ")
     ]
 
 
