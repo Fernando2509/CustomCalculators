@@ -95,3 +95,4 @@ if __name__ == "__main__":
 
     percentage = (questions_got_right * 100) / len(question_list)
     print("\r\nYou Got {0}% of the questions right".format(round(percentage, 3)))
+    input("Press enter to exit...")
