@@ -46,3 +46,4 @@ if __name__ == "__main__":
         print(FtoC(args.ftc[0]))
     else:
         print("No arguments selected, please use \"-h\" for options")
+        input("Press enter to exit...")
