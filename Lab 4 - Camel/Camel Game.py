@@ -13,7 +13,7 @@ drinks = 3
 camel = 0
 thirst = 0
 
-#Or I could have uses 4 print statements
+#Or I could have used 4 print statements
 print
 ('''
 Welcome to Camel!
