@@ -2,7 +2,7 @@
 from os import system 
 #Math is used to get the absolute value of the ditance between him and the natives
 #subprocess is used to allow ANSI character to be drawn on screen
-import math, random, subprocess, os, sys, time, winsound, pygame, threading, urllib
+import math, random, subprocess, os, sys, time, winsound, pygame, threading
 import msvcrt as m
 
 pygame.mixer.pre_init(frequency=44100, size=-16, channels=1)
@@ -12,6 +12,7 @@ play_music = True
 BGM_LINK = "http://www.gamemusicthemes.com/sheetmusic/gameboy/supermarioland/eastonkingdom/Super_Mario_Land_-_Easton_Kingdom_by_Knightlitespeed.mid"
 VICTORY_LINK = "https://files.khinsider.com/midifiles/nes/super-mario-bros./level-complete.mid"
 def download_bgm_async():
+    import urllib.request
     if not os.path.exists(os.getcwd() + "\\" + "music.mid"):
         urllib.request.urlretrieve(BGM_LINK, "music.mid")
     if not os.path.exists(os.getcwd() + "\\" + "victory.mid"):
