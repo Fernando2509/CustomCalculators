@@ -2,8 +2,10 @@
 from os import system 
 #Math is used to get the absolute value of the ditance between him and the natives
 #subprocess is used to allow ANSI character to be drawn on screen
-import math, random, subprocess, os, sys, time, winsound
+import math, random, subprocess, os, sys, time, winsound, pygame
 import msvcrt as m
+
+pygame.mixer.pre_init(frequency=44100, size=-16, channels=1)
 
 
 def _get_terminal_size_windows():
@@ -195,9 +197,24 @@ clear_console()
 last_player_pos = 0
 first_round = True
 
+def play_sound():
+    winsound.Beep(400, 100)
+
 def procedual_write(text, ms):
+    
     for char in text:
         time.sleep(ms)
+        
+        sys.stdout.write(char)
+        sys.stdout.flush()
+    print()
+
+def procedual_intro(text, ms):
+    import threading
+    for char in text:
+        time.sleep(ms)
+        if str.isalpha(char):
+            threading.Thread(target=play_sound).start()
         sys.stdout.write(char)
         sys.stdout.flush()
     print()
@@ -235,11 +252,11 @@ def game_check():
 def play_boring_intro():
     clear_console()
     #Or I could have used 4 print statements
-    procedual_write("Welcome to Camel!", 0.03)
+    procedual_intro("Welcome to Camel!", 0.03)
 
     time.sleep(1)
 
-    procedual_write(
+    procedual_intro(
     '''
 You have stolen a camel to make your
 way across the great Mobi desert.
@@ -247,14 +264,14 @@ way across the great Mobi desert.
 
     time.sleep(2)
 
-    procedual_write(
+    procedual_intro(
     '''The natives want their camel back 
 and are chasing you down! 
     ''', 0.03)
 
     time.sleep(2)
 
-    procedual_write(
+    procedual_intro(
     '''Survive the desert 
 and out-run the natives.
     ''', 0.03)
@@ -262,7 +279,7 @@ and out-run the natives.
 
     time.sleep(2)
 
-    procedual_write(
+    procedual_intro(
     '''
 Good Luck.
     ''', 0.03)

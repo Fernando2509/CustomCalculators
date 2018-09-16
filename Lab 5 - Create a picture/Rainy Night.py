@@ -26,7 +26,7 @@ DARK_BROWN = (40 + 20, 26 + 20, 13 + 20)
 #Background music url
 BGM_LINK = r"https://www.dropbox.com/s/e82yzy7a8o7z7ne/music.ogg?dl=1"
 
-CLOCK = pygame.time.Clock()
+clock = pygame.time.Clock()
 WIDTH = canvas_size[0]
 HEIGHT = canvas_size[1]
 BOTTOM_CENTER = (WIDTH/2, HEIGHT)
@@ -84,9 +84,6 @@ def generate_audio_files():
         print("music.wav not found, creating...")
         bgm = urllib.request.urlretrieve(BGM_LINK, "music.wav")
         print("Sucess")
-
-
-
 
 def translate(value, value_min, value_max, final_min, final_max):
     left_lenght = value_max - value_min
@@ -279,7 +276,7 @@ while not done:
         thunder()    
     pygame.display.update()
  
-    CLOCK.tick(ticks)
+    clock.tick(ticks)
  
 # Close the window and quit.
 pygame.quit()
