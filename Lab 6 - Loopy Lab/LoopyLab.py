@@ -29,8 +29,8 @@ def box(rows):
         print("*" + (" " * ((rows*2) - 2)) + "*")
     print("*" * rows * 2)
 
-ROWS = int(input("Box size: "))
-box(ROWS)
+SIZE = int(input("Box size: "))
+box(SIZE)
 
 #############################
 print()

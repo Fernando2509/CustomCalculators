@@ -2,33 +2,27 @@
 from os import system 
 #Math is used to get the absolute value of the ditance between him and the natives
 #subprocess is used to allow ANSI character to be drawn on screen
-import math, random, subprocess, os, sys, time, winsound, pygame
+import math, random, subprocess, os, sys, time, winsound, pygame, threading, urllib
 import msvcrt as m
 
 pygame.mixer.pre_init(frequency=44100, size=-16, channels=1)
+pygame.init()
 
+play_music = True
+BGM_LINK = "http://www.gamemusicthemes.com/sheetmusic/gameboy/supermarioland/eastonkingdom/Super_Mario_Land_-_Easton_Kingdom_by_Knightlitespeed.mid"
+VICTORY_LINK = "https://files.khinsider.com/midifiles/nes/super-mario-bros./level-complete.mid"
+def download_bgm_async():
+    if not os.path.exists(os.getcwd() + "\\" + "music.mid"):
+        urllib.request.urlretrieve(BGM_LINK, "music.mid")
+    if not os.path.exists(os.getcwd() + "\\" + "victory.mid"):
+        urllib.request.urlretrieve(VICTORY_LINK, "victory.mid")
+ 
+t = threading.Thread(target=download_bgm_async)
+t.start()
 
-def _get_terminal_size_windows():
-    from ctypes import windll, create_string_buffer
-    import struct
-    # stdin handle is -10
-    # stdout handle is -11
-    # stderr handle is -12
-    h = windll.kernel32.GetStdHandle(-12)
-    csbi = create_string_buffer(22)
-    res = windll.kernel32.GetConsoleScreenBufferInfo(h, csbi)
-    if res:
-        (bufx, bufy, curx, cury, wattr,
-            left, top, right, bottom,
-            maxx, maxy) = struct.unpack("hhhhHhhhhhh", csbi.raw)
-        sizex = right - left + 1
-        sizey = bottom - top + 1
-        return sizex, sizey
-    return (0,0)
-
-#Set screen size
+#Set console size
 os.system('mode con: cols=40 lines=20')
-rows, columns = _get_terminal_size_windows()
+
 
 #Used subprocess to allow ASCI characters
 subprocess.call('', shell=True)
@@ -152,6 +146,8 @@ def status():
             procedual_write("The natives are {} miles behind you.".format(change_text_color(str(math.fabs(player - natives)), OKBLUE)), 0.001)
         else: 
             procedual_write("You crossed the desert!", 0.05)
+            
+
         
 def DrawMap():
     global DESERT_SIZE, player, natives
@@ -246,6 +242,9 @@ def game_check():
         clear_console()
         winsound.Beep(250, 4)
         print("You crossed the desert!")
+        pygame.mixer.music.load("victory.mid")
+        pygame.mixer.music.play(1)
+        pygame.mixer.music.set_volume(0.2)
         quit_delayed()
 
 
@@ -283,10 +282,15 @@ and out-run the natives.
     '''
 Good Luck.
     ''', 0.03)
-
     time.sleep(3)
 
+
+
 play_boring_intro()
+if play_music:
+    pygame.mixer.music.load("music.mid")
+    pygame.mixer.music.play(-1)
+    pygame.mixer.music.set_volume(0.1)
 while True:
     clear_console()
 
