@@ -94,14 +94,14 @@ def translate(value, value_min, value_max, final_min, final_max):
     scaled_value = float(value - value_min) / float(left_lenght)
     return final_min + (scaled_value * right_lenght)
 
-def random_neighbor(col):
+def change_color_through_time(col):
     amplitude = 100
     color_variation = math.sin(time.time()*amplitude)
-    remap_variation = translate(color_variation, -1, 1, -20, 10)
+    remap_variation = translate(color_variation, -1, 1, -11, 5)
     
-    r = lerp(col[0], col[0] + remap_variation, 0.01)
-    g = lerp(col[1], col[1] + remap_variation, 0.01)
-    b = lerp(col[2], col[2] + remap_variation, 0.01)
+    r = lerp(col[0], col[0] + remap_variation, 0.1)
+    g = lerp(col[1], col[1] + remap_variation, 0.1)
+    b = lerp(col[2], col[2] + remap_variation, 0.1)
     
     if r > 255:
         r = 255
@@ -261,7 +261,7 @@ while not done:
    
     wind = wind_choices[ random.randint(0, len(wind_choices) - 1) ]
 
-    bg_col = random_neighbor(bg_col)
+    bg_col = change_color_through_time(bg_col)
     screen.fill(bg_col)
     
     skip_first = True

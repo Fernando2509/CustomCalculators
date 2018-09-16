@@ -263,3 +263,4 @@ __pycache__/
 
 # Have no idea why it is here
 *.sqlite
+*.wav
