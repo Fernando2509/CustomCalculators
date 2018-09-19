@@ -1,4 +1,10 @@
-import pygame, os, math, random, wave, struct, urllib, time
+import pygame, os, math, random, wave, struct, urllib.request, time
+################
+you_want_to_hear_an_annoying_music = True
+################
+
+
+
 
 pygame.mixer.pre_init(frequency=44100, size=-16, channels=1)
 pygame.init()
@@ -7,7 +13,6 @@ canvas_size = (800, 400)
 
 tree_trunk_size = 100
 raindrop_instances = 100
-you_want_to_hear_an_annoying_music = True
 ticks = 60
 #Weighted random choices
 wind_choices = [-2] * 1 + [-1] * 2 + [0] * 3 + [1] * 2 + [2] * 1
