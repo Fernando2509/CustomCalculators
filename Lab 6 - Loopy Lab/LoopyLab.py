@@ -37,33 +37,37 @@ print()
 #############################
 
 #Part 3
-#TODO
+
+
 
 def box2(rows):
-    for i in range(rows):
-        # Print leading spaces
-        for j in range(abs(int((rows/2)-i))):
-            print ("*",end=" ")
+    for i in range(1, rows, 2):
+        for x in range(i, rows, 2):
+            print (x,end=" ")
+        for w in range(i-1):
+            print (" ",end=" ")
+        for x in range(rows-1, i-1, -2):
+            print (x,end=" ")            
+        #if i != rows-1:
+        print()
+        
 
+    for i in range(rows-1, 0, -2):
+        for x in range(-i, -rows, -2):
+            print (-x,end=" ")
+        for w in range(i-1):
+            print (" ",end=" ")
+        for x in range(-rows+1, -i+1, 2):
+            print (-x,end=" ")
+            # rows -x -1
+        print()
+    
        
-        print()
 
-    '''
-    for i in range(rows):
-        # Print leading spaces
-        for j in range(i+2):
-            print ("*",end=" ")
-        # Count up
-        for j in range(1,9-i):
-            print (" ",end=" ")
-        # Count down
-        for j in range(7-i,0,-1):
-            print (" ",end=" ")
-        for j in range(i+2):
-            print ("*",end=" ")
- 
-        print()
-    '''
+
+
 
 ROWS = int(input("Size of a box with a box size: ")) * 2
 box2(ROWS)
+
+input("Press emter to exit\r\n")
