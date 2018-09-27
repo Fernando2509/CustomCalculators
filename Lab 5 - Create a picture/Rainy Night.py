@@ -134,8 +134,8 @@ def thunder():
 #Branch
 class Branch():
     def __init__(self, start, end, col=DARK_BROWN, thickness=5):
-        self.start = pygame.Vector2(start[0], start[1])
-        self.end = pygame.Vector2(end[0], end[1])
+        self.start = pygame.math.Vector2(start[0], start[1])
+        self.end = pygame.math.Vector2(end[0], end[1])
         self.end_copy = self.end
         self.damping = 0.65
         self.color = col
@@ -161,7 +161,7 @@ class Branch():
         x = -math.cos(math.radians(-math.pi/ dot)) *  dot * self.damping 
         y = math.sin(math.radians(math.pi /4)) * dot - x
         
-        right_rot = pygame.Vector2(x,y)
+        right_rot = pygame.math.Vector2(x,y)
         new_right = self.end - right_rot
         rb = Branch(self.end, new_right, LIME_GREEN, 2)
 
@@ -173,7 +173,7 @@ class Branch():
         #Rotate Functions
         x = math.cos(math.radians(math.pi/ 4)) * dot * self.damping   
         y = math.sin(math.radians(math.pi /4)) * dot + x
-        left_rot = pygame.Vector2(x,y)
+        left_rot = pygame.math.Vector2(x,y)
         new_left = self.end - left_rot
         lb = Branch(self.end, new_left, LIME_GREEN, 2)
         return lb
