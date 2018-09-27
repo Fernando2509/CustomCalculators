@@ -25,8 +25,16 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 LIME_GREEN = (20, 80, 20)
 BLUE = (0, 0 , 255/1.5)
-DIM_GRAY = (30, 30, 30)
+DIM_GRAY = (40, 40, 40)
 DARK_BROWN = (40 + 20, 26 + 20, 13 + 20)
+GREEN = (0, 255, 0)
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+LIME_GREEN = (20, 80, 20)
+BLUE = (0, 0 , 255)
+YELLOW = (255, 255, 0)
+GREEN_YELLOW = (173, 255, 47)
+BROWN = (40 + 20, 26 + 20, 13 + 20)
 
 #Background music url
 BGM_LINK = r"https://www.dropbox.com/s/e82yzy7a8o7z7ne/music.ogg?dl=1"
@@ -96,15 +104,10 @@ def translate(value, value_min, value_max, final_min, final_max):
     scaled_value = float(value - value_min) / float(left_lenght)
     return final_min + (scaled_value * right_lenght)
 
-def change_color_through_time(col):
-    amplitude = 100
-    color_variation = math.sin(time.time()*amplitude)
-    remap_variation = translate(color_variation, -1, 1, -11, 5)
-    
-    r = lerp(col[0], col[0] + remap_variation, 0.1)
-    g = lerp(col[1], col[1] + remap_variation, 0.1)
-    b = lerp(col[2], col[2] + remap_variation, 0.1)
-    
+def truncate_col(col):
+    r = col[0]
+    g = col[1]
+    b = col[2]
     if r > 255:
         r = 255
     if r < 0:
@@ -119,11 +122,20 @@ def change_color_through_time(col):
         b = 255
     if b < 0:
         b = 0
+    return (r,g,b)
 
+def change_color_through_time(col):
+    amplitude = 1000
+    color_variation = math.sin(time.time()*amplitude)
+    remap_variation = translate(color_variation, -1, 1, -15, 15)
+    
+    r = lerp(col[0], col[0] + remap_variation, 0.1)
+    g = lerp(col[1], col[1] + remap_variation, 0.1)
+    b = lerp(col[2], col[2] + remap_variation, 0.1)
 
     ret_val = ( r, g, b)
     
-    return ret_val
+    return truncate_col(ret_val)
 
 def thunder():
     screen.fill(WHITE)
@@ -251,6 +263,10 @@ pygame.mixer.Sound.play(rain_audio, -1)
 
 bg_col = DIM_GRAY
 done = False
+
+gradient_size = HEIGHT/2 #change this value
+gradient_size = int(gradient_size)
+
 while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -260,11 +276,24 @@ while not done:
             #You can uncomment this, but it's going the be pretty laggy
             #create_branch()
 
+    
    
     wind = wind_choices[ random.randint(0, len(wind_choices) - 1) ]
 
     bg_col = change_color_through_time(bg_col)
     screen.fill(bg_col)
+
+    gradient_size = int(gradient_size)
+    gradient_size = translate(math.sin(time.time()), -1, 1, HEIGHT/1.3, HEIGHT)
+    
+    for x in range(int(gradient_size)):
+        end_pos = x/gradient_size
+        r = lerp(BLACK[0], bg_col[0], end_pos) 
+        g = lerp(BLACK[1], bg_col[1], end_pos)
+        b = lerp(BLACK[2], bg_col[2], end_pos)
+        new_col = (r, g, b)
+  
+        pygame.draw.line(screen, new_col, (0, x), (WIDTH, x))
     
     skip_first = True
     for x in tree:
