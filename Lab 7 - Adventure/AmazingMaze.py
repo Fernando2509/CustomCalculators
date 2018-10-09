@@ -17,6 +17,7 @@ RIGHT_ARROW = 77
 UP_ARROW = 72
 ESC = 27
 
+
 DESCRIPTION = 0
 
 NORTH = 1
@@ -25,12 +26,14 @@ SOUTH = 3
 WEST = 4
 
 HAVE_PLAYER = 5
-NAME = 6
-HAVE_ITEM = 7
-ITEM_NAME = 8
-ITEM_DESCRIPTION = 9
-HAVE_EVENT = 10
-EVENT_NAME = 11
+
+#Future features 
+##HAVE_ITEM = 7
+##ITEM_NAME = 8
+##ITEM_DESCRIPTION = 9
+##HAVE_EVENT = 10
+##EVENT_NAME = 11
+
 def change_text_color(text, col):
     return col + text + DEFAULT
 
@@ -157,7 +160,7 @@ def input_events():
 
 def move(flag):
     global pos
-    
+
     if rooms[pos][NORTH] and flag == NORTH:
         rooms[pos][HAVE_PLAYER] = False
         pos += SIZE_Y * -1 + 0
@@ -183,8 +186,8 @@ def move(flag):
         rooms[pos][HAVE_PLAYER] = True
         return
 
-    
-    
+
+
 
 def process_text(text):
     pass
@@ -233,8 +236,189 @@ def yes_no_switch():
         elif choice == 110:
             return False
 
-rooms = [['The room is pitch black, but you can see 2 doors: one at your left, and the other to your right', False, True, True, False, False, 'Dark bedroom\r', False, False, False, False, False], ['The bathroom looks abandoned and it smells', False, False, False, True, False, 'Bathroom', False, False, False, False, False], False, ['New room', False, False, False, False, False, 'New room', False, False, False, False, False], False, ['There is a corridor and a door at the end of the corridor to the east', True, True, False, False, False, 'Corridor', False, False, False, False, False], ['Walking along the corridor you see a new pathway to the south. It looks like a very long corridor so you keep your way through the normal path', False, True, True, True, False, 'Corridor', False, False, False, False, False], ['At the end of the corridor you see the door half open', False, True, False, True, False, 'Corridor', False, False, False, False, False], ['Opening the door you find yourself in a deserted highway', False, False, False, True, False, 'Exit', False, False, False, False, False], False, False, ['The path looks a lot worse compared to the one you were before, most windows look broken and you are not confortable being there', True, False, True, False, False, 'South Corridor', False, False, False, False, False], ["You are bursting and don't hesitate in using it. You are filled with D E T E R M I N A T I O N\x1b", False, False, True, False, False, 'Visitors restroom', False, False, False, False, False], False, False, ['There is a sofa  and some old fancy chairs. I could take a nap there...hmmm better not', False, True, False, False, False, 'Waiting room', False, False, False, False, False], ['It looks like a hall of some kind of hotel, but no one appears to be in the building. There is a path to east and west', True, True, False, True, False, 'Hall', False, False, False, False, False], ['Looks like the main entrace the door is broken and there is glass all over the floor, but there is a door to the north that appears to be the restroom', True, False, False, True, False, 'Main entrance', False, False, False, False, False], False, False, False, False, False, False, False]
-
+rooms = [  
+   [  
+      'The room is pitch black, but you can see 2 doors: one at your left, and the other to your right',
+      False,
+      True,
+      True,
+      False,
+      False,
+      'Dark bedroom\r',
+      False,
+      False,
+      False,
+      False,
+      False
+   ],
+   [  
+      'The bathroom looks abandoned and it smells',
+      False,
+      False,
+      False,
+      True,
+      False,
+      'Bathroom',
+      False,
+      False,
+      False,
+      False,
+      False
+   ],
+   False,
+   [  
+      'New room',
+      False,
+      False,
+      False,
+      False,
+      False,
+      'New room',
+      False,
+      False,
+      False,
+      False,
+      False
+   ],
+   False,
+   [  
+      'There is a corridor and a door at the end of the corridor to the east',
+      True,
+      True,
+      False,
+      False,
+      False,
+      'Corridor',
+      False,
+      False,
+      False,
+      False,
+      False
+   ],
+   [  
+      'Walking along the corridor you see a new pathway to the south. It looks like a very long corridor so you keep your way through the normal path',
+      False,
+      True,
+      True,
+      True,
+      False,
+      'Corridor',
+      False,
+      False,
+      False,
+      False,
+      False
+   ],
+   [  
+      'At the end of the corridor you see the door half open',
+      False,
+      True,
+      False,
+      True,
+      False,
+      'Corridor',
+      False,
+      False,
+      False,
+      False,
+      False
+   ],
+   [  
+      'Opening the door you find yourself in a deserted highway',
+      False,
+      False,
+      False,
+      True,
+      False,
+      'Exit',
+      False,
+      False,
+      False,
+      False,
+      False
+   ],
+   False,
+   False,
+   [  
+      'The path looks a lot worse compared to the one you were before, most windows look broken and you are not confortable being there',
+      True,
+      False,
+      True,
+      False,
+      False,
+      'South Corridor',
+      False,
+      False,
+      False,
+      False,
+      False
+   ],
+   [  
+      "You are bursting and don't hesitate in using it. You are filled with D E T E R M I N A T I O N\x1b",
+      False,
+      False,
+      True,
+      False,
+      False,
+      'Visitors restroom',
+      False,
+      False,
+      False,
+      False,
+      False
+   ],
+   False,
+   False,
+   [  
+      'There is a sofa  and some old fancy chairs. I could take a nap there...hmmm better not',
+      False,
+      True,
+      False,
+      False,
+      False,
+      'Waiting room',
+      False,
+      False,
+      False,
+      False,
+      False
+   ],
+   [  
+      'It looks like a hall of some kind of hotel, but no one appears to be in the building. There is a path to east and west',
+      True,
+      True,
+      False,
+      True,
+      False,
+      'Hall',
+      False,
+      False,
+      False,
+      False,
+      False
+   ],
+   [  
+      'Looks like the main entrace the door is broken and there is glass all over the floor, but there is a door to the north that appears to be the restroom',
+      True,
+      False,
+      False,
+      True,
+      False,
+      'Main entrance',
+      False,
+      False,
+      False,
+      False,
+      False
+   ],
+   False,
+   False,
+   False,
+   False,
+   False,
+   False,
+   False
+]
 
 rooms[0][HAVE_PLAYER] = True
 

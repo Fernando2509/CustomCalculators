@@ -1,0 +1,7 @@
+Color Pallete based on Alto's adventure
+
+1: Create a day night cycle 
+2: Create mountains (implement degrade colors)
+3: Put tress on mountains
+3: Animated clouds (with transparency)
+4:Animated sun
