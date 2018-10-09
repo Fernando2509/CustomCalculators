@@ -18,10 +18,12 @@ UP_ARROW = 72
 ESC = 27
 
 DESCRIPTION = 0
+
 NORTH = 1
 EAST = 2
 SOUTH = 3
 WEST = 4
+
 HAVE_PLAYER = 5
 NAME = 6
 HAVE_ITEM = 7
@@ -45,7 +47,7 @@ def get_room_number(x, y):
     global SIZE_Y
     return y * SIZE_Y + x
 
-starting_room = 12
+starting_room = 0
 pos = starting_room
 inventory = []
 #Maze visualized
@@ -63,6 +65,8 @@ def render_game():
         for x in range(SIZE_Y):
             room = rooms[x + SIZE_Y * y]
             if room == False:
+                r = list(WALL * CELL_SIZE)
+                print("".join(r), end="")
                 continue
             r = list(WALL * CELL_SIZE)
             if room[NORTH]:
@@ -75,13 +79,14 @@ def render_game():
         for x in range(SIZE_Y):
             room = rooms[x + SIZE_Y * y]
             if room == False:
+                print(MID_WALL, end="")
                 continue
             r = list(MID_WALL)
             #Check room without player
             if room[EAST]:
-                r = DOOR + '█' * int(CELL_SIZE - 2) + WALL
-            if room[WEST]:
                 r = WALL + '█' * int(CELL_SIZE - 2) + DOOR
+            if room[WEST]:
+                r = DOOR + '█' * int(CELL_SIZE - 2) + WALL
             if room[EAST] and room[WEST]:
                 r = DOOR + '█' * int(CELL_SIZE - 2) + DOOR
 
@@ -89,11 +94,13 @@ def render_game():
             #PS: I Cannot use r[x] because I am using Ascii character
             #ex: \098[1m have an escape code but it is not 0 nor 1 character
             if room[EAST] and room[HAVE_PLAYER]:
-                r = DOOR + '█' + PLAYER * 2 + '█' + WALL
-            if room[WEST] and room[HAVE_PLAYER]:
                 r = WALL + '█' + PLAYER * 2 + '█' + DOOR
+            if room[WEST] and room[HAVE_PLAYER]:
+                r = DOOR + '█' + PLAYER * 2 + '█' + WALL
             if room[EAST] and room[WEST] and room[HAVE_PLAYER]:
                 r = DOOR + '█' + PLAYER * 2 + '█' + DOOR
+            if room[NORTH] and room[SOUTH] and room[HAVE_PLAYER]:
+                r = WALL + '█' + PLAYER * 2 + '█' + WALL
 
             print("".join(r), end="")
         print()
@@ -113,6 +120,8 @@ def render_game():
         print()
 
 def render_ui():
+    if rooms[pos] == False:
+        print("Room : {}\nIs invalid".format(pos))
     print(rooms[pos][NAME])
     print(rooms[pos][DESCRIPTION])
 
@@ -120,16 +129,16 @@ def input_events():
     choice = ord(m.getwch())
     dirt = False
     if choice == LEFT_ARROW:
-        move(-1, 0)
+        move(WEST)
         dirt = True
     elif choice == UP_ARROW:
-        move(0, -1)
+        move(NORTH)
         dirt = True
     elif choice == DOWN_ARROW:
-        move(0, 1)
+        move(SOUTH)
         dirt = True
     elif choice == RIGHT_ARROW:
-        move(1, 0)
+        move(EAST)
         dirt = True
     elif choice == ESC:
         dirt = True
@@ -146,28 +155,36 @@ def input_events():
         actual_choice = first_char + actual_choice
         process_text(actual_choice)
 
-def move(v1, v2):
+def move(flag):
     global pos
-
-    #Check right wall
-    if not rooms[pos][EAST] and v1 > 0:
+    
+    if rooms[pos][NORTH] and flag == NORTH:
+        rooms[pos][HAVE_PLAYER] = False
+        pos += SIZE_Y * -1 + 0
+        rooms[pos][HAVE_PLAYER] = True
         return
 
-    #Check left wall
-    if not rooms[pos][WEST] and v1 < 0:
+    if rooms[pos][SOUTH] and flag == SOUTH:
+        rooms[pos][HAVE_PLAYER] = False
+        pos += SIZE_Y * 1 + 0
+        rooms[pos][HAVE_PLAYER] = True
         return
 
-    #Check top wall
-    if not rooms[pos][NORTH] and v2 == -1:
+    if  rooms[pos][EAST] and flag == EAST :
+        rooms[pos][HAVE_PLAYER] = False
+        pos += SIZE_Y * 0 + 1
+        rooms[pos][HAVE_PLAYER] = True
         return
 
-    #Check bottom wall
-    if not rooms[pos][SOUTH] and v2 == 1:
+
+    if  rooms[pos][WEST] and flag == WEST:
+        rooms[pos][HAVE_PLAYER] = False
+        pos += SIZE_Y * 0 - 1
+        rooms[pos][HAVE_PLAYER] = True
         return
 
-    rooms[pos][5] = False
-    pos += SIZE_Y * v2 + v1
-    rooms[pos][5] = True
+    
+    
 
 def process_text(text):
     pass
@@ -185,13 +202,15 @@ def render_room(room):
 
     #Check room without player
     if room[EAST]:
-        r34 = DOOR + ' ' * int(CELL_SIZE - 2) + WALL
-    if room[WEST]:
         r34 = WALL + ' ' * int(CELL_SIZE - 2) + DOOR
+    if room[WEST]:
+        r34 = DOOR + ' ' * int(CELL_SIZE - 2) + WALL
     if room[EAST] and room[WEST]:
         r34 = DOOR + ' ' * int(CELL_SIZE - 2) + DOOR
 
     #Check if room have player
+    if room[HAVE_PLAYER]:
+        r34 = WALL + '█' + PLAYER * 2 + '█' + WALL
     if room[EAST] and room[HAVE_PLAYER]:
         r34 = DOOR + '█' + PLAYER * 2 + '█' + WALL
     if room[WEST] and room[HAVE_PLAYER]:
@@ -214,9 +233,10 @@ def yes_no_switch():
         elif choice == 110:
             return False
 
-rooms = [['You are in a dark room', False, False, False, True, False, 'The abyss', False, False, False, True, 'death'], ['You enter in a narrow corner and it appears to be a dark room ahead', False, True, False, True, False, 'Narrow Corner', False, 'skull', 'A mysterious ancient skull', True, 'got_skull'], ['An empty room with 3 doors: One in the west, one in the south and one in the east', False, True, True, True, False, ' North Room', False, False, False, False, '_'], ['You are on the furthest northeast corner on the room, but there is a door on your other to your right and a room on your left', False, False, True, True, False, 'Northeastern Room', False, False, False, False, '_'], ['You are facing a door, it appears to be locked, you can turn back by going west', False, False, False, False, False, 'The Door', False, False, False, True, 'Exit'], False, ['You entered a bedroom, the is a key on the table.', False, True, False, False, False, 'Bedroom', False, 'Key', 'A normal key, probably could open a door (or not)', False, '_'], ['Middle of the corridor', True, True, True, True, False, 'You are in the middle of a corridor', False, False, False, False, '_'], ['A continuation of the corridor, there is a room on the right', False, True, False, True, False, 'East corridor', False, False, False, False, '_'], ['An empty room, there is nothing to do here', False, False, False, True, False, 'Empty Room', False, False, False, False, '_'], False, ['Library', False, True, False, False, False, 'A mini library over a table with a box on the corner of the table', False, 'box', "A box with a key lock, it won't open without a key", False, '_'], ['A dark room, I can see a bright lights coming throught 2 doors on the west and the north', True, False, False, True, True, 'Dark room', False, False, False, False, '_'], False, False, False, False, False, False, False, False, False, False, False, False]
+rooms = [['The room is pitch black, but you can see 2 doors: one at your left, and the other to your right', False, True, True, False, False, 'Dark bedroom\r', False, False, False, False, False], ['The bathroom looks abandoned and it smells', False, False, False, True, False, 'Bathroom', False, False, False, False, False], False, ['New room', False, False, False, False, False, 'New room', False, False, False, False, False], False, ['There is a corridor and a door at the end of the corridor to the east', True, True, False, False, False, 'Corridor', False, False, False, False, False], ['Walking along the corridor you see a new pathway to the south. It looks like a very long corridor so you keep your way through the normal path', False, True, True, True, False, 'Corridor', False, False, False, False, False], ['At the end of the corridor you see the door half open', False, True, False, True, False, 'Corridor', False, False, False, False, False], ['Opening the door you find yourself in a deserted highway', False, False, False, True, False, 'Exit', False, False, False, False, False], False, False, ['The path looks a lot worse compared to the one you were before, most windows look broken and you are not confortable being there', True, False, True, False, False, 'South Corridor', False, False, False, False, False], ["You are bursting and don't hesitate in using it. You are filled with D E T E R M I N A T I O N\x1b", False, False, True, False, False, 'Visitors restroom', False, False, False, False, False], False, False, ['There is a sofa  and some old fancy chairs. I could take a nap there...hmmm better not', False, True, False, False, False, 'Waiting room', False, False, False, False, False], ['It looks like a hall of some kind of hotel, but no one appears to be in the building. There is a path to east and west', True, True, False, True, False, 'Hall', False, False, False, False, False], ['Looks like the main entrace the door is broken and there is glass all over the floor, but there is a door to the north that appears to be the restroom', True, False, False, True, False, 'Main entrance', False, False, False, False, False], False, False, False, False, False, False, False]
 
-rooms[starting_room][HAVE_PLAYER] = True
+
+rooms[0][HAVE_PLAYER] = True
 
 done = False
 while not done:
