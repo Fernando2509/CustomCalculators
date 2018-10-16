@@ -1,5 +1,4 @@
-Color Pallete based on Alto's adventure
-
+0: Use Color Pallete based on Alto's adventure    OK
 1: Create a day night cycle                       OK
 2: Create mountains (implement degrade colors)    OK
 3: Put tress on mountains                         DROPPED
