@@ -30,6 +30,15 @@ YELLOW = (255, 255, 0)
 TRANSPARENCY=(0, 0, 0, 0)
 DAY_YELLOW = (240,212,66)
 
+def text_object(text, font):
+    text_surface = font.render(text, True, WHITE)
+    return text_surface, text_surface.get_rect()
+
+def message_display(text, x, y, size):
+    font = pygame.font.Font('freesansbold.ttf', size)
+    text_surf, text_rect = text_object(text, font)
+    text_rect.center = (x, y)
+    return screen.blit(text_surf, text_rect)
 
 def col_lerp(col_1, col_2, t):
     r = lerp(col_1[0],
@@ -175,7 +184,7 @@ polygon_points = [far_left_big_mountain, bottom_right_small_mountain, far_right_
 
 #This list is pointless, these are just the
 #points that I used to make polygons
-#points = []
+points = []
 #points = [((224, 369), (312, 311)), ((224, 369), (312, 311)), ((313, 310), (361, 357)), ((313, 310), (361, 357)), ((361, 356), (490, 248)), ((361, 356), (490, 248)), ((491, 247), (522, 276)), ((491, 247), (522, 276)), ((532, 261), (639, 166)), ((532, 261), (639, 166)), ((243, 356), (431, 440)), ((243, 356), (431, 440)), ((567, 383), (342, 479)), ((567, 383), (342, 479)), ((567, 384), (639, 413)), ((567, 384), (639, 413)), ((225, 369), (331, 479)), ((225, 369), (331, 479)), ((226, 370), (0, 115)), ((226, 370), (0, 115)), ((535, 259), (524, 276))]
 
 #Circles aka lazy stars
@@ -206,17 +215,20 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 
 #Sun Stuff
+SUN_START_POS = (int(WIDTH/1.5), int(HEIGHT*0.85)) #Better not touch this. You'll mess up the "translate" function if the sun is on a weird position
+
 sun_x = SUN_START_POS[0] 
 sun_y = SUN_START_POS[1] 
 angle = 90
-speed = 0.02    #Works better with values between 0.01 - 0.04
-radius = 350
+angle *= 0.0174532925 #Converting to radians (actual angles eg:45, 90)
+
+hours = 12
+speed = 0.1    #Works better with values between 0.01 - 0.04
+speed_copy = speed
+radius =  350
 sun_rect = pygame.draw.circle(screen, YELLOW, SUN_START_POS, 5)
 sun_layer = pygame.Surface((WIDTH, HEIGHT)).convert_alpha()
 sun_layer.fill(TRANSPARENCY)
-SUN_START_POS = (int(WIDTH/1.5), int(HEIGHT*0.85)) #Better not touch this. You'll
-#                                                   mess up the "translate" function if
-#                                                   the sun is on a weird position
 
 #Mountains Stuff
 mountain_layer = pygame.Surface((WIDTH, HEIGHT)).convert_alpha()
@@ -224,25 +236,10 @@ mountain_layer.fill(TRANSPARENCY)
 col = [rand_col(SILHOUETTE_COLOR, alpha=177),rand_col(SILHOUETTE_COLOR,alpha=160),rand_col(SILHOUETTE_COLOR, alpha=144)]
 
 
+
 done = False
 # Game loop.
-while not done:
-    screen.fill(ALTOS_GREEN)
-    sun_layer.fill(TRANSPARENCY)
-    
-    angle += speed
-    angle = angle % 360
-    
-    sun_x = SUN_START_POS[0] + math.cos(angle)*radius 
-    sun_y = SUN_START_POS[1] + math.sin(angle)*radius 
-    #print(str(sun_x) + " " + str(sun_y))
-    
-    sun_x = int(sun_x )
-    sun_y = int(sun_y )
-     
-    
-    
-        
+while not done:    
     mouse = pygame.mouse.get_pressed()
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -259,45 +256,84 @@ while not done:
                 current_tool = POLYGON
                 print("Current tool: Polygon")
                 
-            if event.key == pygame.K_w:
-                sun_y -= 10
-            if event.key == pygame.K_a:
-                sun_x -= 10
-            if event.key == pygame.K_s:
-                sun_y += 10
-            if event.key == pygame.K_d:
-                sun_x += 10
+            if event.key == pygame.K_LEFT:
+                speed -= 0.1
+            if event.key == pygame.K_RIGHT:
+                speed += 0.05
+            if event.key == pygame.K_SPACE:
+                speed = speed_copy
+           
 
-    # Update.
+    # Update
     if current_tool == POLYGON and not already_using_polygon:
         already_using_polygon = True
         polygon_temp_points = []
     ToolsDel[current_tool]()
+    #angle(var)+ | hour
+    #0 or 360 = 18hr
+    #45 = 21hr
+    #90 = 24hr
+    #180 = 6hr
+    #270 = 12hr
+    angle = angle % 6.28319
+    angle += 0.0174532925 * speed
 
+    radians = angle * 57.2958
+    
+    if 270+15 > radians > 90+15:
+        hours = translate(radians, 90+15, 270, 1, 12)
+    if 270+15 < radians:
+        hours = translate(radians, 270+15, 360, 1, 6)
+    if radians < 90+15:
+        hours = translate(radians, 0, 90, 6, 12)
+    hours = int(hours+0.1)
+    minutes = translate(radians % 14.1, 0, 15, 0, 60)
+    
+    
+    sun_x = SUN_START_POS[0] + math.cos(angle) * radius 
+    sun_y = SUN_START_POS[1] + math.sin(angle) * radius 
+    #print(str(sun_x) + " " + str(sun_y))
+    sun_x = int(sun_x )
+    sun_y = int(sun_y )
 
-    # Draw
     sun_alpha = abs(int(translate(sun_y, 0, HEIGHT , 255, 50)))
-    #sun_alpha = truncate(sun_alpha, 50, 255)
-    sun = pygame.draw.circle(sun_layer, (255,255,0, sun_alpha), (sun_x, sun_y ), 23)
 
+    stars_alpha = abs(int(translate(sun_alpha, 255, 0, -100, 255)))
+    stars_alpha = truncate(stars_alpha, 0, 255)
+    
+    
+    # Draw
+    screen.fill(ALTOS_GREEN)
+    sun_layer.fill(TRANSPARENCY)
     
     
     damp = sun_y
     damp = translate(damp, 200, HEIGHT, 0, 1)
     draw_gradient(ALTOS_GREEN, col_lerp(DAY_YELLOW, BLACK, damp))
+
     
     for pt in points:
         pygame.draw.line(screen, BLACK, pt[0], pt[1], 1)
 
     for c in circles:
-        pygame.draw.circle(screen, WHITE, c[0], c[1])
+        pygame.draw.circle(sun_layer, (255,255,255,stars_alpha), c[0], c[1])
 
     for x in range(len(polygon_points)):
         pygame.draw.polygon(mountain_layer, col[x-1], polygon_points[x-1])
 
+    sun = pygame.draw.circle(sun_layer, (255,255,0, sun_alpha), (sun_x, sun_y ), 23)
+
     screen.blit(sun_layer, (0,0))
     screen.blit(mountain_layer, (0,0))
-    
+
+    #Display hours
+    hour_str = str(int(hours))
+    min_str = str(int(minutes))
+    if len(hour_str) <= 1:
+        hour_str = "0" + hour_str
+    if len(min_str) <= 1:
+        min_str = "0" + min_str
+    message_display("{}:{}".format(hour_str, min_str), 100, 25, 36)
     
     pygame.display.flip()
     clock.tick(tick)
