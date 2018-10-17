@@ -219,10 +219,9 @@ SUN_START_POS = (int(WIDTH/1.5), int(HEIGHT*0.85)) #Better not touch this. You'l
 
 sun_x = SUN_START_POS[0] 
 sun_y = SUN_START_POS[1] 
-angle = 90
+angle = 90+45
 angle *= 0.0174532925 #Converting to radians (actual angles eg:45, 90)
 
-hours = 12
 speed = 0.1    #Works better with values between 0.01 - 0.04
 speed_copy = speed
 radius =  350
